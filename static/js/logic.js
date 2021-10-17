@@ -1,4 +1,5 @@
 var queryUrl = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
+var platesUrl = ""
 
 d3.json(queryUrl).then (function(data) {
     console.log(data.features);
@@ -31,18 +32,14 @@ var myMap = L.map("mapid", {
     layers: [streetmap]
   });
 
-var earthquakes = new L.layerGroup();  
-  
-
-L.geoJSON(data, {
+var earthquakes = L.geoJSON(data, {
     pointToLayer: function (feature, latlng) {
       return L.circleMarker(latlng)
-
-    },
+    },    
     style: function (feature) {
       return {
         fillColor: getColor(feature.properties.mag),
-        color: "white",
+        color: "clear",
         opacity:1,
         fillOpacity:0.5,
         radius: feature.properties.mag * 6
@@ -58,15 +55,15 @@ L.geoJSON(data, {
       return "orange";
     }
     if (magnitude > 3) {
-      return "gold";
-    }
-    if (magnitude > 2) {
       return "yellow";
     }
-    if (magnitude > 1) {
-      return "lightyellow";
+    if (magnitude > 2) {
+      return "lightgreen";
     }
-    return "lime";
+    if (magnitude > 1) {
+      return "grey";
+    }
+    return "lavender";
   };
   
 
@@ -74,7 +71,7 @@ var overlayMaps = {
   "Earthquakes": earthquakes
 };
 
-streetmap.addTo(myMap);
+
 L.control.layers(baseMaps, overlayMaps, {collapsed: true})
 .addTo(myMap);
 
